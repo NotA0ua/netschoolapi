@@ -182,7 +182,7 @@ class NetSchoolAPI:
             monday = date.today() - timedelta(days=date.today().weekday())
             start = monday
         if not end:
-            end = start + timedelta(days=5)
+            end = start + timedelta(days=6)
 
         response = await self._request_with_optional_relogin(
             requests_timeout,
@@ -210,7 +210,7 @@ class NetSchoolAPI:
             - timedelta(days=date.today().weekday())
             + (timedelta(days=6) * delta)
         )
-        start = monday
+        start = monday + timedelta(days=7) if date.today().weekday == 6 else monday
         end = start + timedelta(days=6)
 
         return await self.diary(start, end, requests_timeout)
@@ -280,7 +280,7 @@ class NetSchoolAPI:
 
     async def assignments(
         self, assignment_id: int, requests_timeout: int | None = None
-    ) -> List[schemas.Attachment]:
+    ) -> schemas.Attachment | None:
         response = await self._request_with_optional_relogin(
             requests_timeout,
             self._wrapped_client.client.build_request(
@@ -291,7 +291,7 @@ class NetSchoolAPI:
         )
         response = response.json()
         if not response:
-            return []
+            return
         assignments = schemas.AssignSchema().load(response)
         return assignments  # type: ignore
 

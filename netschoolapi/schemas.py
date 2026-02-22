@@ -65,6 +65,7 @@ class Assignment(NetSchoolAPISchema):
 @dataclass
 class Assign(NetSchoolAPISchema):
     id: int
+    weight: int
     description: str = field(metadata=dict(allow_none=True))
     attachments: List[Attachment] = field(default_factory=list)
 
