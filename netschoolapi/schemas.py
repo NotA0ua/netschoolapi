@@ -47,14 +47,13 @@ class Assignment(NetSchoolAPISchema):
     weight: int
     content: str = field(metadata=dict(data_key='assignmentName'))
     mark: int = field(metadata=dict(allow_none=True, data_key='mark'))
-    is_duty: bool = field(metadata=dict(data_key='dutyMark'))
     deadline: datetime.date = field(metadata=dict(data_key='dueDate'))
 
     @pre_load
     def unwrap_marks(self, assignment: Dict[str, Any], **_) -> Dict[str, str]:
         mark = assignment.pop('mark', None)
         if mark:
-            assignment.update(mark)
+            assignment.update({"mark": mark.mark, "dutyMark": mark.dutyMark})
         else:
             assignment.update({'mark': None, 'dutyMark': False})
         mark_comment = assignment.pop("markComment", None)
