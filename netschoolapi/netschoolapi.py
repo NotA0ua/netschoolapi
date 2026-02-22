@@ -275,7 +275,7 @@ class NetSchoolAPI:
         if not response:
             return []
         attachments_json = response[0]['attachments']
-        attachments = schemas.AttachmentSchema().load(attachments_json)
+        attachments = schemas.AttachmentSchema().load(attachments_json, many=True)
         return attachments  # type: ignore
 
     async def assignments(
@@ -292,7 +292,7 @@ class NetSchoolAPI:
         response = response.json()
         if not response:
             return []
-        assignments = schemas.AssignSchema().load(response, many=True)
+        assignments = schemas.AssignSchema().load(response)
         return assignments  # type: ignore
 
     async def school(self, requests_timeout: int = None) -> schemas.School:
