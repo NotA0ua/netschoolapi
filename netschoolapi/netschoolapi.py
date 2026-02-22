@@ -176,7 +176,7 @@ class NetSchoolAPI:
         self,
         start: Optional[date] = None,
         end: Optional[date] = None,
-        requests_timeout: int = None,
+        requests_timeout: int | None = None,
     ) -> schemas.Diary:
         if not start:
             monday = date.today() - timedelta(days=date.today().weekday())
@@ -201,6 +201,19 @@ class NetSchoolAPI:
         diary_schema.context['assignment_types'] = self._assignment_types
         diary = diary_schema.load(response.json())
         return diary  # type: ignore
+
+    async def diary_delta(
+        self, delta: int = 0, requests_timeout: int | None = None
+    ) -> schemas.Diary:
+        monday = (
+            date.today()
+            - timedelta(days=date.today().weekday())
+            + (timedelta(days=6) * delta)
+        )
+        start = monday
+        end = start + timedelta(days=6)
+
+        return await self.diary(start, end, requests_timeout)
 
     async def overdue(
         self,
@@ -264,6 +277,23 @@ class NetSchoolAPI:
         attachments_json = response[0]['attachments']
         attachments = schemas.AttachmentSchema().load(attachments_json, many=True)
         return attachments  # type: ignore
+
+    async def assignments(
+        self, assignment_id: int, requests_timeout: int | None = None
+    ) -> List[schemas.Attachment]:
+        response = await self._request_with_optional_relogin(
+            requests_timeout,
+            self._wrapped_client.client.build_request(
+                method="GET",
+                url=f"student/diary/assigns/{assignment_id}",
+                params={"studentId": self._student_id},
+            ),
+        )
+        response = response.json()
+        if not response:
+            return []
+        assignments = schemas.AssignSchema().load(response, many=True)
+        return assignments  # type: ignore
 
     async def school(self, requests_timeout: int = None) -> schemas.School:
         response = await self._request_with_optional_relogin(

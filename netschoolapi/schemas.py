@@ -5,7 +5,7 @@ from typing import Any, Dict, List
 from marshmallow import EXCLUDE, Schema, pre_load
 from marshmallow_dataclass import class_schema
 
-__all__ = ['Attachment', 'Announcement', 'Assignment', 'Diary', 'School']
+__all__ = ['Attachment', 'Announcement', 'Assignment', 'Diary', 'School', 'Assign']
 
 
 class NetSchoolAPISchema(Schema):
@@ -60,6 +60,13 @@ class Assignment(NetSchoolAPISchema):
         assignment["comment"] = mark_comment["name"] if mark_comment else ""
         assignment["type"] = self.context["assignment_types"][assignment.pop("typeId")]
         return assignment
+
+
+@dataclass
+class Assign(NetSchoolAPISchema):
+    id: int
+    description: str = field(metadata=dict(allow_none=True))
+    attachments: List[Attachment] = field(default_factory=list)
 
 
 @dataclass
@@ -123,6 +130,7 @@ class School(NetSchoolAPISchema):
 AttachmentSchema = class_schema(Attachment)
 DiarySchema = class_schema(Diary)
 AssignmentSchema = class_schema(Assignment)
+AssignSchema = class_schema(Assign)
 ShortSchoolSchema = class_schema(ShortSchool)
 SchoolSchema = class_schema(School)
 AnnouncementSchema = class_schema(Announcement)
