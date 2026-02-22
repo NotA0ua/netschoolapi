@@ -208,7 +208,7 @@ class NetSchoolAPI:
         monday = (
             date.today()
             - timedelta(days=date.today().weekday())
-            + (timedelta(days=6) * delta)
+            + (timedelta(days=7) * delta)
         )
         start = monday + timedelta(days=7) if date.today().weekday == 6 else monday
         end = start + timedelta(days=6)
