@@ -53,7 +53,7 @@ class Assignment(NetSchoolAPISchema):
     def unwrap_marks(self, assignment: Dict[str, Any], **_) -> Dict[str, str]:
         mark = assignment.pop('mark', None)
         if mark:
-            assignment.update({"mark": mark.mark, "dutyMark": mark.dutyMark})
+            assignment.update({"mark": mark["mark"], "dutyMark": mark["dutyMark"]})
         else:
             assignment.update({'mark': None, 'dutyMark': False})
         mark_comment = assignment.pop("markComment", None)
