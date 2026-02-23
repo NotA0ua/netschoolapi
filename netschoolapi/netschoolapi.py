@@ -205,8 +205,8 @@ class NetSchoolAPI:
     async def diary_delta(
         self, delta: int = 0, requests_timeout: int | None = None
     ) -> schemas.Diary:
-        monday = date.today() - timedelta(days=date.today().weekday())
-        start = (monday  + timedelta(days=7) if date.today().weekday == 6 else monday) + timedelta(days=delta * 7)
+        monday = date.today() - timedelta(days=date.today().weekday()) + timedelta(days=delta * 7)
+        start = monday + timedelta(days=7) if date.today().weekday() == 6 else monday 
         end = start + timedelta(days=6)
 
         return await self.diary(start, end, requests_timeout)
