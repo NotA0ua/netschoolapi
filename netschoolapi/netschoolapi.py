@@ -200,7 +200,7 @@ class NetSchoolAPI:
         diary_schema = schemas.DiarySchema()
         diary_schema.context['assignment_types'] = self._assignment_types
         diary = diary_schema.load(response.json())
-        return diary  # type: ignore
+        return diary
 
     async def diary_delta(
         self, delta: int = 0, requests_timeout: int | None = None

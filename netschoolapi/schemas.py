@@ -47,6 +47,7 @@ class Assignment(NetSchoolAPISchema):
     weight: int
     content: str = field(metadata=dict(data_key='assignmentName'))
     mark: int = field(metadata=dict(allow_none=True, data_key='mark'))
+    dutyMark: bool = field(metadata=dict(data_key='dutyMark'))
     deadline: datetime.date = field(metadata=dict(data_key='dueDate'))
 
     @pre_load
